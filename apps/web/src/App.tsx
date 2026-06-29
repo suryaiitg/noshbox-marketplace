@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { login, setToken, getToken, getRole } from './api/client';
 import { OrdersList } from './screens/OrdersList';
+import { OrderDetail } from './screens/OrderDetail';
 import { StoreCredit } from './components/StoreCredit';
 
 const SEED_USERS = [
@@ -14,6 +15,7 @@ export function App() {
   const [role, setRole] = useState<string | null>(getRole());
   const [busy, setBusy] = useState(false);
   const [creditNonce, setCreditNonce] = useState(0);
+  const [selectedOrderId, setSelectedOrderId] = useState<string | null>(null);
 
   async function loginAs(email: string): Promise<void> {
     setBusy(true);
@@ -21,6 +23,7 @@ export function App() {
       await login(email);
       setWho(email);
       setRole(getRole());
+      setSelectedOrderId(null);
     } finally {
       setBusy(false);
     }
@@ -43,20 +46,26 @@ export function App() {
             setToken(null);
             setWho(null);
             setRole(null);
+            setSelectedOrderId(null);
           }}
         >
           Log out
         </button>
       </div>
       {who ? (
-        <>
-          {role === 'customer' && <StoreCredit refreshKey={creditNonce} />}
-          <OrdersList
-            key={who}
+        selectedOrderId ? (
+          <OrderDetail
+            orderId={selectedOrderId}
             canRefund={canRefund}
-            onRefunded={() => setCreditNonce((n) => n + 1)}
+            onBack={() => setSelectedOrderId(null)}
+            onChanged={() => setCreditNonce((n) => n + 1)}
           />
-        </>
+        ) : (
+          <>
+            {role === 'customer' && <StoreCredit refreshKey={creditNonce} />}
+            <OrdersList key={who} onSelect={setSelectedOrderId} />
+          </>
+        )
       ) : (
         <p className="muted">Pick a user above to load their orders.</p>
       )}

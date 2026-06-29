@@ -63,9 +63,21 @@ export interface OrderRow extends Record<string, unknown> {
 export interface OrderItemRow extends Record<string, unknown> {
   id: string;
   order_id: string;
+  product_id: string | null;
   name: string;
   quantity: number;
   unit_price_cents: number;
+}
+
+export interface ProductRow extends Record<string, unknown> {
+  id: string;
+  merchant_id: string;
+  name: string;
+  description: string | null;
+  category: string;
+  price_cents: number;
+  active: boolean;
+  created_at: string;
 }
 
 export interface LedgerRow extends Record<string, unknown> {

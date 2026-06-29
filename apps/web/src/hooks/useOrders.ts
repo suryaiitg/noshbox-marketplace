@@ -1,6 +1,16 @@
 import { useEffect, useState } from 'react';
 import { apiFetch } from '../api/client';
 
+export interface OrderItem {
+  id: string;
+  product_id: string | null;
+  name: string;
+  quantity: number;
+  unit_price_cents: number;
+  category: string | null;
+  product_active: boolean | null;
+}
+
 export interface Order {
   id: string;
   customer_id: string;
@@ -9,6 +19,7 @@ export interface Order {
   status: string;
   created_at: string;
   refunded_cents?: number;
+  items?: OrderItem[];
 }
 
 interface State {

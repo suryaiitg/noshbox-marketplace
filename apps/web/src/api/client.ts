@@ -78,6 +78,10 @@ export async function refundOrder(orderId: string, amountCents?: number): Promis
   });
 }
 
+export async function getOrderRefunds(orderId: string): Promise<Refund[]> {
+  return apiFetch<Refund[]>(`/orders/${orderId}/refunds`);
+}
+
 export async function getStoreCredit(): Promise<number> {
   const { balance_cents } = await apiFetch<{ balance_cents: number }>('/me/store-credit');
   return balance_cents;
